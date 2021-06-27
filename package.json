@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Azzazello1979/wsp-node-mongo-api/issues"
   },
-  "homepage": "https://github.com/Azzazello1979/wsp-node-mongo-api#readme"
+  "homepage": "https://github.com/Azzazello1979/wsp-node-mongo-api#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
