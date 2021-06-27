@@ -39,7 +39,7 @@ app.use('/users', usersRoute);
 
 // check connection...
 app.get('/check-connection', (req, res) => {
-    if (connectionErrorMsg) {
+    if (!connectionErrorMsg) {
         res.status(200).send(connectedMsg);
     } else {
         res.status(500).send(connectionErrorMsg);
