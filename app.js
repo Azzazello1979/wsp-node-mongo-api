@@ -12,9 +12,7 @@ DB_PASS = process.env.DB_PASS;
 // mongoDB connection
 const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}.mongodb.net/${DB_DATABASE}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect()
-    .then(response => alert(response))
-    .catch(err => console.log(err))
+
 
 // middlewares
 app.use(cors());
@@ -22,7 +20,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    res.status(200).send('Ok, running');
+    client.connect()
+        .then(response => {
+            res.status(200).send(response);
+        })
+        .catch(err => console.log(err))
+
 });
 
 app.listen(PORT, () => { console.log(`OK...listening on ${PORT}`) });
