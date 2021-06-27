@@ -21,11 +21,14 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.get('/', (req, res) => {
-    client.connect()
-        .then(response => {
-            res.status(200).send(response);
-        })
-        .catch(err => console.log(err))
+
+    client.connect((err, db) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.status(200).send(db);
+        }
+    });
 
 });
 
