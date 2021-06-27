@@ -10,7 +10,7 @@ DB_USER = process.env.DB_USER;
 DB_PASS = process.env.DB_PASS;
 
 // mongoDB connection
-const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}.mongodb.net/${DB_DATABASE}?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}.mongodb.net/${DB_DATABASE}?retryWrites=true&w=majority?authSource=admin`;
 
 // middlewares
 app.use(cors());
