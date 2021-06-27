@@ -40,7 +40,7 @@ app.use('/users', usersRoute);
 //app.use('/test', testRoute);
 
 // testing...
-router.get('/test', (req, res) => {
+app.get('/test', (req, res) => {
     res.status(200).send('works...');
 });
 
