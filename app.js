@@ -1,7 +1,22 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const { MongoClient } = require('mongodb');
+
 PORT = process.env.PORT || 7171 // <--- heroku will assign the port
+DB_CLUSTER = process.env.DB_CLUSTER;
+DB_DATABASE = process.env.DB_DATABASE;
+DB_USER = process.env.DB_USER;
+DB_PASS = process.env.DB_PASS;
+
+// mongoDB connection
+const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}.mongodb.net/${DB_DATABASE}?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+client.connect(err => {
+    const collection = client.db("test").collection("devices");
+    // perform actions on the collection object
+    client.close();
+});
 
 // middlewares
 app.use(cors());
