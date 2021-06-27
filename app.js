@@ -11,8 +11,6 @@ DB_PASS = process.env.DB_PASS;
 
 // mongoDB connection
 const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}.mongodb.net/${DB_DATABASE}?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
 
 // middlewares
 app.use(cors());
@@ -22,11 +20,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
 
-    client.connect((err, db) => {
+    MongoClient.connect(uri, { native_parser: true }, (err, db) => {
         if (err) {
-            res.status(500).send(err);
+            res.status(500).send('error...')
         } else {
             res.status(200).send(db);
+            db.close();
         }
     });
 
