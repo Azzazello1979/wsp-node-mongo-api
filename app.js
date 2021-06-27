@@ -6,8 +6,8 @@ require('dotenv').config('.env');
 const mongoose = require('mongoose');
 
 // mongoDB Atlas connection flags
-connectionErrorMsg = null;
-connectedMsg = null;
+let connectionErrorMsg = null;
+let connectedMsg = null;
 
 // process env files
 PORT = process.env.PORT || 80 // <--- heroku will assign the port
