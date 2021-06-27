@@ -26,28 +26,27 @@ mongoose.connect(mongoConnectionString, { useNewUrlParser: true, useUnifiedTopol
     .catch(err => { connectionErrorMsg = `Error when connecting to MongoDB Atlas: ${err.message}`; })
 
 // require routes
-const checkConnectionRoute = require('./routes/check-connection');
 const usersRoute = require('./routes/users');
-//const testRoute = require('./routes/test');
+
 
 ////////////////////// middleware chain //////////////////////
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/check-connection', checkConnectionRoute);
 app.use('/users', usersRoute);
-//app.use('/test', testRoute);
 
-// testing...
-app.get('/test', (req, res) => {
-    res.status(200).send('works...');
+
+// check connection...
+app.get('/check-connection', (req, res) => {
+    if (connectionErrorMsg) {
+        res.status(200).send(connectedMsg);
+    } else {
+        res.status(500).send(connectionErrorMsg);
+    }
 });
 
 // launch server
 app.listen(PORT, (err) => {
     console.log(err ? `Error: Express cannot bind to port ${PORT}` : `OK... Express listening on port ${PORT}`);
 });
-
-exports.connectionErrorMsg = connectionErrorMsg;
-exports.connectedMsg = connectedMsg;
