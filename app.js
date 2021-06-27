@@ -1,15 +1,15 @@
+// module imports
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const userSchema = require('./models/userSchema');
-const User = mongoose.model('User', userSchema, 'users');
+// mongoDB Atlas connection flags
+export let connectionErrorMsg = null;
+export let connectedMsg = null;
 
-let connectionError = null;
-let connected = null;
-
-PORT = process.env.PORT || 7171 // <--- heroku will assign the port
+// process env files
+PORT = process.env.PORT || 80 // <--- heroku will assign the port
 DB_CLUSTER = process.env.DB_CLUSTER;
 DB_DATABASE = process.env.DB_DATABASE;
 DB_USER = process.env.DB_USER;
@@ -20,30 +20,23 @@ const mongoConnectionString = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}
 
 // mongoose connection to mongoDB Atlas
 mongoose.set('useCreateIndex', true);
-mongoose.connect(mongoConnectionString, { useNewUrlParser: true })
-    .then(() => { connected = 'OK, connected' })
-    .catch(err => { connectionError = err.message })
+mongoose.connect(mongoConnectionString, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => { connectedMsg = 'OK, connected to MongoDB Atlas'; })
+    .catch(err => { connectionErrorMsg = `Error when connecting to MongoDB Atlas: ${err.message}`; })
 
-// middlewares
+// require routes
+const checkConnectionRoute = require('./routes/check-connection');
+const usersRoute = require('./routes/users');
+
+////////////////////// middleware chain //////////////////////
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// check mongoDB Atlas connection
-app.get('/check-connection', (req, res) => {
-    if (!connectionError) {
-        res.status(200).send(connected);
-    } else {
-        res.status(500).send(connectionError);
-    }
-});
+app.use('/check-connection', checkConnectionRoute);
+app.use('/users', usersRoute);
 
-app.get('/test-db', (req, res) => {
-    User.findOne({ username: 'Peti' }, 'password')
-        .then(result => res.status(200).send(result))
-        .catch(err => res.status(404).send(err))
-});
-
+// launch server
 app.listen(PORT, (err) => {
     console.log(err ? `Error: Express cannot bind to port ${PORT}` : `OK... Express listening on port ${PORT}`);
 });
