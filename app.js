@@ -12,12 +12,12 @@ DB_DATABASE = process.env.DB_DATABASE;
 DB_USER = process.env.DB_USER;
 DB_PASS = process.env.DB_PASS;
 
-// mongoDB connection string
-const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}.mongodb.net/${DB_DATABASE}?retryWrites=true&w=majority?authSource=admin`;
+// mongoDB Atlas connection string
+const mongoConnectionString = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}.mongodb.net/${DB_DATABASE}?retryWrites=true&w=majority?authSource=admin`;
 
 // mongoose connection to mongoDB Atlas
 mongoose.set('useCreateIndex', true);
-mongoose.connect(uri, { useNewUrlParser: true })
+mongoose.connect(mongoConnectionString, { useNewUrlParser: true })
     .then(() => { connected = 'OK, connected' })
     .catch(err => { connectionError = err.message })
 
@@ -26,15 +26,15 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-app.get('/', (req, res) => {
-
+// check mongoDB Atlas connection
+app.get('/check-connection', (req, res) => {
     if (!connectionError) {
         res.status(200).send(connected);
     } else {
         res.status(500).send(connectionError);
     }
-
 });
 
-app.listen(PORT, () => { console.log(`OK...listening on ${PORT}`) });
+app.listen(PORT, (err) => {
+    console.log(err ? `Error: Express cannot bind to port ${PORT}` : `OK... Express listening on port ${PORT}`);
+});
