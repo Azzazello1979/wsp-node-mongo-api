@@ -12,11 +12,9 @@ DB_PASS = process.env.DB_PASS;
 // mongoDB connection
 const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@${DB_CLUSTER}.mongodb.net/${DB_DATABASE}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect(err => {
-    const collection = client.db("test").collection("devices");
-    // perform actions on the collection object
-    client.close();
-});
+client.connect()
+    .then(response => alert(response))
+    .catch(err => console.log(err))
 
 // middlewares
 app.use(cors());
