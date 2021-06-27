@@ -3,6 +3,9 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+const userSchema = require('./models/userSchema');
+const User = mongoose.model('User', userSchema, 'users');
+
 let connectionError = null;
 let connected = null;
 
@@ -33,6 +36,12 @@ app.get('/check-connection', (req, res) => {
     } else {
         res.status(500).send(connectionError);
     }
+});
+
+app.get('/test-db', (req, res) => {
+    User.findOne({ username: 'Peti' }, 'password')
+        .then(result => res.status(200).send(result))
+        .catch(err => res.status(404).send(err))
 });
 
 app.listen(PORT, (err) => {
