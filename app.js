@@ -5,8 +5,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 // mongoDB Atlas connection flags
-export let connectionErrorMsg = null;
-export let connectedMsg = null;
+exports.connectionErrorMsg = null;
+exports.connectedMsg = null;
 
 // process env files
 PORT = process.env.PORT || 80 // <--- heroku will assign the port

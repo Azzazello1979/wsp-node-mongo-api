@@ -1,10 +1,10 @@
-import { connectedMsg, connectionErrorMsg } from './../app';
+const app = require('./../app');
 
 exports.checkConnection = (req, res) => {
-    if (!connectionError) {
-        res.status(200).send(connectedMsg);
+    if (!app.connectionErrorMsg) {
+        res.status(200).send(app.connectedMsg);
     } else {
-        res.status(500).send(connectionErrorMsg);
+        res.status(500).send(app.connectionErrorMsg);
     }
 }
 
