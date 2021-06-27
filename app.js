@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 
     MongoClient.connect(uri, { native_parser: true }, (err, db) => {
         if (err) {
-            res.status(500).send('error...')
+            res.status(500).send(err);
         } else {
             res.status(200).send(db);
             db.close();
