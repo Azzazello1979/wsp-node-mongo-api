@@ -5,8 +5,8 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 
 // mongoDB Atlas connection flags
-exports.connectionErrorMsg = null;
-exports.connectedMsg = null;
+connectionErrorMsg = null;
+connectedMsg = null;
 
 // process env files
 PORT = process.env.PORT || 80 // <--- heroku will assign the port
@@ -27,6 +27,7 @@ mongoose.connect(mongoConnectionString, { useNewUrlParser: true, useUnifiedTopol
 // require routes
 const checkConnectionRoute = require('./routes/check-connection');
 const usersRoute = require('./routes/users');
+const testRoute = require('./routes/test');
 
 ////////////////////// middleware chain //////////////////////
 app.use(cors());
@@ -35,8 +36,12 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/check-connection', checkConnectionRoute);
 app.use('/users', usersRoute);
+app.use('/test', testRoute);
 
 // launch server
 app.listen(PORT, (err) => {
     console.log(err ? `Error: Express cannot bind to port ${PORT}` : `OK... Express listening on port ${PORT}`);
 });
+
+exports.connectionErrorMsg = connectionErrorMsg;
+exports.connectedMsg = connectedMsg;
