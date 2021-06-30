@@ -19,6 +19,8 @@ exports.getAllUsers = (req, res) => {
 
 exports.registerUser = (req, res) => {
 
+    res.setHeader('Content-Type', 'application/json');
+
     if (req.body.action === 'register') {
 
         const newUserObject = new User({
@@ -27,7 +29,9 @@ exports.registerUser = (req, res) => {
         });
 
         newUserObject.save()
-            .then(response => console.log(response))
+            .then(response => {
+                res.status(200).json({ message: 'OK, new user saved' });
+            })
             .catch(err => res.status(500).send(`MongoDB query error: ${err.message}`))
 
     }
