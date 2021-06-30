@@ -5,7 +5,7 @@ const sha256 = require('sha256');
 
 exports.getAllUsers = (req, res) => {
 
-    User.find()
+    User.find({}).select('email')
         .then(result => {
             if (result.length > 0) {
                 res.status(200).send(result);
