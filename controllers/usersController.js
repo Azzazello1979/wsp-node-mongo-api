@@ -4,6 +4,7 @@ const User = mongoose.model('User', userSchema, 'users');
 const sha256 = require('sha256');
 
 exports.getAllUsers = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
 
     User.find({}).select('email')
         .then(result => {
@@ -18,22 +19,25 @@ exports.getAllUsers = (req, res) => {
 };
 
 exports.registerUser = (req, res) => {
-
     res.setHeader('Content-Type', 'application/json');
 
-    if (req.body.action === 'register') {
+    User.findOne({ email: req.body.email })
+        .then(response => response ? emailExists() : saveNewUser())
+        .catch(err => console.log(`main catch error: ${err}`))
 
-        const newUserObject = new User({
+    async function saveNewUser() {
+        const newUser = new User({
             email: req.body.email,
-            password: sha256(req.body.password).toString(),
+            password: sha256(req.body.password),
         });
+        const response = await newUser.save();
+        console.log(`response after saving new user: ${response}`);
+        res.status(200).json({ message: 'OK, user saved!' });
+    }
 
-        newUserObject.save()
-            .then(response => {
-                res.status(200).json({ message: 'OK, new user saved' });
-            })
-            .catch(err => res.status(500).send(`MongoDB query error: ${err.message}`))
-
+    function emailExists() {
+        console.log(`email taken...`);
+        res.status(400);
     }
 
 

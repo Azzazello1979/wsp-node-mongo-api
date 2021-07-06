@@ -11,3 +11,6 @@ all additional script can be run like this:
 
 npm run start
 npm run dev
+
+-------------------------------------------------------------------------
+res.status(400) ... cannot chain json() nor send() after this
