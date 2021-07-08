@@ -52,7 +52,7 @@ exports.registerUser = (req, res) => {
 
     function emailExists(response) {
         console.log(`email taken...${response}`);
-        res.status(400).json({ message: 'email taken...' });
+        res.status(400).json({ message: 'EMAIL_TAKEN' });
     }
 
 
@@ -84,13 +84,13 @@ exports.loginUser = (req, res) => {
             res.status(200).send(token);
 
         } else { // not same, send error to front-end
-            res.status(401).json({ message: 'sent password and stored password for the user do not match...' });
+            res.status(400).json({ message: 'PASSWORD_MISMATCH' });
         }
 
     };
 
     function noSuchEmail() {
-        res.status(401).json({ message: 'no such email...' });
+        res.status(400).json({ message: 'NO_SUCH_EMAIL' });
     };
 
 
