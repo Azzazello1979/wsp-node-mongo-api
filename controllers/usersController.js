@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 const userSchema = require('./../models/userSchema');
 const User = mongoose.model('User', userSchema, 'users');
 const sha256 = require('sha256');
+const jwt = require('jsonwebtoken');
+const SALT = process.env.SALT;
+const SECRET = process.env.SECRET;
 
+
+// get all users
 exports.getAllUsers = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
@@ -18,27 +23,76 @@ exports.getAllUsers = (req, res) => {
 
 };
 
+// register new user
 exports.registerUser = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
     User.findOne({ email: req.body.email })
-        .then(response => response ? emailExists() : saveNewUser())
+        .then(response => response ? emailExists(response) : saveNewUser())
         .catch(err => console.log(`main catch error: ${err}`))
 
     async function saveNewUser() {
         const newUser = new User({
             email: req.body.email,
-            password: sha256(req.body.password),
+            password: sha256(req.body.password + SALT),
         });
         const response = await newUser.save();
+
+        // create and send token to front-end
+        const token = jwt.sign(
+            { email: req.body.email },
+            SECRET,
+            { expiresIn: '1d' }
+        );
+
+
         console.log(`response after saving new user: ${response}`);
-        res.status(200).json({ message: 'OK, user saved!' });
+        res.status(200).json({ message: 'OK, user saved!', token });
     }
 
-    function emailExists() {
-        console.log(`email taken...`);
-        res.status(400);
+    function emailExists(response) {
+        console.log(`email taken...${response}`);
+        res.status(400).json({ message: 'email taken...' });
     }
+
+
+};
+
+// login existing user
+exports.loginUser = (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+
+    // see if such email exists
+    User.findOne({ email: req.body.email })
+        .then(response => response ? emailExists(response.password) : noSuchEmail())
+        .catch(err => console.log(`main catch error: ${err}`))
+
+    function emailExists(passwordFromDB) {
+        // check if incoming password is same as stored
+        const incomingHashedPassword = sha256(req.body.password + SALT);
+        const storedHashedPassword = passwordFromDB;
+
+        const same = incomingHashedPassword === storedHashedPassword;
+
+        if (same) { // create and send token to front-end
+            const token = jwt.sign(
+                { email: req.body.email },
+                SECRET,
+                { expiresIn: '1d' }
+            );
+
+            res.status(200).send(token);
+
+        } else { // not same, send error to front-end
+            res.status(401).json({ message: 'sent password and stored password for the user do not match...' });
+        }
+
+    };
+
+    function noSuchEmail() {
+        res.status(401).json({ message: 'no such email...' });
+    };
+
 
 
 };
