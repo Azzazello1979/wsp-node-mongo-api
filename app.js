@@ -27,7 +27,7 @@ mongoose.connect(mongoConnectionString, { useNewUrlParser: true, useUnifiedTopol
 
 // require routes
 const usersRoute = require('./routes/users');
-
+const productsRoute = require('./routes/products');
 
 ////////////////////// middleware chain //////////////////////
 app.use(cors());
@@ -35,6 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/users', usersRoute);
+app.use('/products', productsRoute);
 
 
 // check connection...
