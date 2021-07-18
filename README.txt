@@ -14,3 +14,14 @@ npm run dev
 
 -------------------------------------------------------------------------
 res.status(400) ... cannot chain json() nor send() after this
+
+----------------------------------------------------------------------------------------------------
+Create the model using mongoose.model() in the same file where you defined the schema for the model.
+
+1. create schema (shape of the document)
+2. create model from the schema
+    ... now you can add your own methods to the model (the model is not only the data but it is also
+    the methods that work on that data)
+3. export the model
+
+Export the whole model.
