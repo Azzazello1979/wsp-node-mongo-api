@@ -1,6 +1,4 @@
-const mongoose = require('mongoose');
-const ProductModel = require('./../models/productSchema');
-
+const ProductModel = require('../models/product');
 
 // get all products
 exports.getAllProducts = (req, res) => {

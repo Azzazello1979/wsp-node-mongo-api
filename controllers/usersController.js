@@ -1,6 +1,4 @@
-const mongoose = require('mongoose');
-const userSchema = require('./../models/userSchema');
-const User = mongoose.model('User', userSchema, 'users');
+const UserModel = require('./../models/user');
 const sha256 = require('sha256');
 const jwt = require('jsonwebtoken');
 const SALT = process.env.SALT;
@@ -11,7 +9,7 @@ const SECRET = process.env.SECRET;
 exports.getAllUsers = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
-    User.find({}).select('email')
+    UserModel.find({}).select('email')
         .then(result => {
             if (result.length > 0) {
                 res.status(200).send(result);
@@ -27,7 +25,7 @@ exports.getAllUsers = (req, res) => {
 exports.registerUser = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
-    User.findOne({ email: req.body.email })
+    UserModel.findOne({ email: req.body.email })
         .then(response => response ? emailExists(response) : saveNewUser())
         .catch(err => console.log(`main catch error: ${err}`))
 
@@ -63,7 +61,7 @@ exports.loginUser = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
     // see if such email exists
-    User.findOne({ email: req.body.email })
+    UserModel.findOne({ email: req.body.email })
         .then(response => response ? emailExists(response.password) : noSuchEmail())
         .catch(err => console.log(`main catch error: ${err}`))
 
