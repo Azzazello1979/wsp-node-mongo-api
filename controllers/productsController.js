@@ -1,13 +1,12 @@
 const mongoose = require('mongoose');
-const productSchema = require('./../models/productSchema');
-const Product = mongoose.model('Product', productSchema, 'products');
+const ProductModel = require('./../models/productSchema');
 
 
 // get all products
 exports.getAllProducts = (req, res) => {
     res.setHeader('Content-Type', 'application/json');
 
-    Product.find({}).select('title')
+    ProductModel.find({}).select('title')
         .then(result => {
             if (result.length > 0) {
                 res.status(200).send(result);
